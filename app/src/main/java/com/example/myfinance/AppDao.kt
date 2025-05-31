@@ -11,13 +11,18 @@ import androidx.room.RoomDatabase
 interface AppDao  {
     @Insert
     suspend fun insert(user: User)
+
+    @Insert
+    suspend fun insert(goal: Goal)
+
     @Query("SELECT EXISTS(SELECT 1 FROM users WHERE login = :login AND password = :password)")
     suspend fun isUserExists(login: String, password: String): Boolean
-    @Insert
-    suspend fun insert(goals: Goal)
+
+    @Query("SELECT * FROM goals ORDER BY id DESC LIMIT 1")
+    suspend fun getLastGoal(): Goal?
 }
 
-@Database(entities = [User::class], version = 1)
+@Database(entities = [User::class, Goal::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): AppDao
 

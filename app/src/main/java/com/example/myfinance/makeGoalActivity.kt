@@ -26,31 +26,48 @@ class makeGoalActivity : AppCompatActivity() {
             insets
         }
 
-        val userGoaltitle: EditText = findViewById(R.id.goal_name)
+        val userGoalTitle: EditText = findViewById(R.id.goal_name)
         val userStartAmount: EditText = findViewById(R.id.goal_start_amount)
         val userEndAmount: EditText = findViewById(R.id.goal_end_amount)
 
         val buttonGoal: Button = findViewById(R.id.button_goal)
 
-        buttonGoal.setOnClickListener{
-            val title = userGoaltitle.text.toString().trim()
-            val startAmount = userStartAmount.text.toString().trim()
-            val endAmount = userEndAmount.text.toString().trim()
+        buttonGoal.setOnClickListener {
+            val title = userGoalTitle.text.toString().trim()
+            val startAmountStr = userStartAmount.text.toString().trim()
+            val endAmountStr = userEndAmount.text.toString().trim()
 
-            if (title == "" || startAmount == "" || endAmount == "")
+            if (title.isEmpty() || startAmountStr.isEmpty() || endAmountStr.isEmpty()) {
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
-            else{
-                val goal = Goal(0,title,startAmount,endAmount)
-                val db = AppDatabase.getInstance(this)
-                val goalDao = db.userDao()
-                lifecycleScope.launch {
-                    goalDao.insert(goal)
-                }
-                Toast.makeText(this, "Пользователь $login добавлен", Toast.LENGTH_LONG).show()
-                title.text.clear()
-                startAmount.text.clear()
-                endAmount.text.clear()
+                return@setOnClickListener
             }
+
+            // Попробуем преобразовать в Int
+            val startAmount = startAmountStr.toIntOrNull()
+            val endAmount = endAmountStr.toIntOrNull()
+
+            if (startAmount == null || endAmount == null) {
+                Toast.makeText(this, "Введите корректные числовые значения", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            val goal = Goal(0, title, startAmount, endAmount)
+
+            val db = AppDatabase.getInstance(this)
+            val goalDao = db.userDao()
+            lifecycleScope.launch {
+                goalDao.insert(goal)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@makeGoalActivity, "Цель добавлена", Toast.LENGTH_LONG).show()
+                    setResult(RESULT_OK)
+                    finish()
+                }
+            }
+
+            userGoalTitle.text.clear()
+            userStartAmount.text.clear()
+            userEndAmount.text.clear()
         }
+
     }
 }
