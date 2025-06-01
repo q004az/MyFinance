@@ -17,10 +17,13 @@
         android:theme="@style/Theme.MyFinance"
         tools:targetApi="31">
         <activity
-            android:name=".PageExpencesActivity"
+            android:name=".FoodCategoryActivityShow"
             android:exported="false" />
         <activity
-            android:name=".ProfileWithGoalActivity"
+            android:name=".MakeExpenceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PageExpencesActivity"
             android:exported="false" />
         <activity
             android:name=".makeGoalActivity"

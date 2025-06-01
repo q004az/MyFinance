@@ -20,3 +20,13 @@ data class Goal(
     val initialCapital: Int,
     val targetAmount: Int
 )
+
+@Entity("expenses")
+data class Expense(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val category: String,
+    val name: String,
+    val amount: Int,
+    val date: String
+)

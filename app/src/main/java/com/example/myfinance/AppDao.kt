@@ -20,9 +20,28 @@ interface AppDao  {
 
     @Query("SELECT * FROM goals ORDER BY id DESC LIMIT 1")
     suspend fun getLastGoal(): Goal?
+
+    @Insert
+    suspend fun insert(expense: Expense)
+
+    @Query("SELECT * FROM expenses")
+    suspend fun getAllExpenses(): List<Expense>
+
+    @Query("SELECT * FROM expenses WHERE id = :id")
+    suspend fun getExpenseById(id: Long): Expense?
+
+    @Query("SELECT SUM(amount) FROM expenses WHERE category = 'Еда'")
+    suspend fun getFoodExpensesSum(): Int?
+
+    @Query("SELECT SUM(amount) FROM expenses WHERE category = 'Мед'")
+    suspend fun getMedicineExpensesSum(): Int?
+
+    @Query("SELECT SUM(amount) FROM expenses WHERE category = 'Отдых'")
+    suspend fun getRelaxExpensesSum(): Int?
+
 }
 
-@Database(entities = [User::class, Goal::class], version = 1)
+@Database(entities = [User::class, Goal::class, Expense::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): AppDao
 

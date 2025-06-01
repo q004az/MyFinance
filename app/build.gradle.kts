@@ -41,6 +41,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     val room_version = "2.7.1"
 
     implementation("androidx.room:room-runtime:$room_version")

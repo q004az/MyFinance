@@ -1,5 +1,6 @@
 package com.example.myfinance
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -9,11 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainScreenActivity : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -23,6 +26,7 @@ class MainScreenActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
 
         val login = intent.getStringExtra("user_login")
         val name: TextView = findViewById(R.id.text_name)
@@ -41,6 +45,24 @@ class MainScreenActivity : AppCompatActivity() {
 
         // Загружаем цель
         loadGoal()
+
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.bottom_profile
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.bottom_profile -> {
+                    true // Остаемся на текущем экране
+                }
+                R.id.bottom_home -> {
+                    startActivity(Intent(applicationContext, PageExpencesActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> false
+            }
+        }
+
 
         }
 
