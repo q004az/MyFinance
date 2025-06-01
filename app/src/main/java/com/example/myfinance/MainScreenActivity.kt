@@ -71,29 +71,39 @@ class MainScreenActivity : AppCompatActivity() {
             loadGoal()
         }
 
-        private fun loadGoal() {
-            val goalName: TextView = findViewById(R.id.goal_name)
-            val goalNow: TextView = findViewById(R.id.goal_now)
-            val goalNeed: TextView = findViewById(R.id.goal_need)
-            val goalBetween: TextView = findViewById(R.id.goal_between)
+    private fun loadGoal() {
+        val goalName: TextView = findViewById(R.id.goal_name)
+        val goalNow: TextView = findViewById(R.id.goal_now)
+        val goalNeed: TextView = findViewById(R.id.goal_need)
+        val goalBetween: TextView = findViewById(R.id.goal_between)
 
-            val db = AppDatabase.getInstance(this)
-            val dao = db.userDao()
-            lifecycleScope.launch {
-                val lastGoal = dao.getLastGoal()
-                withContext(Dispatchers.Main) {
-                    if (lastGoal != null) {
-                        goalName.text = lastGoal.title
-                        goalNow.text = lastGoal.initialCapital.toString()
-                        goalNeed.text = lastGoal.targetAmount.toString()
-                        goalBetween.text = (lastGoal.targetAmount - lastGoal.initialCapital).toString()
-                    } else {
-                        goalName.text = "Нет цели"
-                        goalNow.text = "0"
-                        goalNeed.text = "0"
-                        goalBetween.text = "0"
-                    }
+        val db = AppDatabase.getInstance(this)
+        val dao = db.userDao()
+
+        lifecycleScope.launch {
+            val lastGoal = dao.getLastGoal()
+            val totalExpenses = withContext(Dispatchers.IO) {
+                (dao.getFoodExpensesSum() ?: 0) +
+                        (dao.getMedicineExpensesSum() ?: 0) +
+                        (dao.getRelaxExpensesSum() ?: 0)
+            }
+
+            withContext(Dispatchers.Main) {
+                if (lastGoal != null) {
+                    val currentBalance = lastGoal.initialCapital - totalExpenses
+                    val remaining = lastGoal.targetAmount - currentBalance
+
+                    goalName.text = lastGoal.title
+                    goalNow.text = currentBalance.toString() // Текущий баланс
+                    goalNeed.text = lastGoal.targetAmount.toString()
+                    goalBetween.text = remaining.toString() // Остаток до цели
+                } else {
+                    goalName.text = "Нет цели"
+                    goalNow.text = "0"
+                    goalNeed.text = "0"
+                    goalBetween.text = "0"
                 }
             }
         }
+    }
     }

@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"/>
 
         <ImageView
-            android:contentDescription="@string/fdfd"
+            android:contentDescription="delete"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
