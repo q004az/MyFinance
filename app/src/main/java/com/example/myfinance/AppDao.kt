@@ -30,6 +30,18 @@ interface AppDao  {
     @Query("SELECT * FROM expenses WHERE id = :id")
     suspend fun getExpenseById(id: Long): Expense?
 
+    @Query("SELECT * FROM expenses WHERE category = 'Еда'")
+    suspend fun getFoodExpenses(): List<Expense>
+
+    @Query("DELETE FROM expenses WHERE id = :foodId")
+    suspend fun deleteById(foodId: Int)
+
+    @Query("SELECT * FROM expenses WHERE category = 'Мед'")
+    suspend fun getMedicineExpenses(): List<Expense>
+
+    @Query("SELECT * FROM expenses WHERE category = 'Отдых'")
+    suspend fun getRelaxExpenses(): List<Expense>
+
     @Query("SELECT SUM(amount) FROM expenses WHERE category = 'Еда'")
     suspend fun getFoodExpensesSum(): Int?
 

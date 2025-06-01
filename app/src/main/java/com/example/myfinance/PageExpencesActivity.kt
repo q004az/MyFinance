@@ -6,12 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.myfinance.detailsFood.FoodCategoryActivityShow
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +30,7 @@ class PageExpencesActivity : AppCompatActivity() {
             insets
         }
 
-
+        initListener()
         val buttonMakeExpense: Button = findViewById(R.id.button_make_expense)
 
         buttonMakeExpense.setOnClickListener {
@@ -58,6 +59,30 @@ class PageExpencesActivity : AppCompatActivity() {
 
     }
 
+    private fun initListener() {
+        val buttonFoodContainer: ConstraintLayout = findViewById(R.id.constraintLayout_food)
+        val buttonMedicineContainer: ConstraintLayout = findViewById(R.id.constraintLayout_medicine)
+        val buttonRelaxContainer: ConstraintLayout = findViewById(R.id.constraintLayout_relax)
+
+        buttonFoodContainer.setOnClickListener{
+            val intent = Intent(this, FoodCategoryActivityShow::class.java)
+            intent.putExtra("name_category", CATEGORY.FOOD)
+            startActivity(intent)
+        }
+
+        buttonMedicineContainer.setOnClickListener{
+            val intent = Intent(this, FoodCategoryActivityShow::class.java)
+            intent.putExtra("name_category", CATEGORY.MEDICINE)
+            startActivity(intent)
+        }
+
+        buttonRelaxContainer.setOnClickListener{
+            val intent = Intent(this, FoodCategoryActivityShow::class.java)
+            intent.putExtra("name_category", CATEGORY.RELAX)
+            startActivity(intent)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         val db = AppDatabase.getInstance(this)
@@ -80,6 +105,7 @@ class PageExpencesActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 // Update UI with the sums
+
                 findViewById<TextView>(R.id.text_money_food).text = "$foodSum ₽"
                 findViewById<TextView>(R.id.text_money_medicine).text = "$medicineSum ₽"
                 findViewById<TextView>(R.id.text_money_relax).text = "$relaxSum ₽"

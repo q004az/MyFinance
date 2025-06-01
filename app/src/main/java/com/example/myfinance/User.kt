@@ -30,3 +30,7 @@ data class Expense(
     val amount: Int,
     val date: String
 )
+
+enum class CATEGORY : java.io.Serializable{
+    FOOD, MEDICINE, RELAX
+}

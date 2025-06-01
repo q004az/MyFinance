@@ -17,7 +17,7 @@
         android:theme="@style/Theme.MyFinance"
         tools:targetApi="31">
         <activity
-            android:name=".FoodCategoryActivityShow"
+            android:name=".detailsFood.FoodCategoryActivityShow"
             android:exported="false" />
         <activity
             android:name=".MakeExpenceActivity"
