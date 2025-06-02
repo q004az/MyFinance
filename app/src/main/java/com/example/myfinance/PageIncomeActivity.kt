@@ -15,7 +15,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.myfinance.detailsFood.FoodCategoryActivityShow
+import com.example.myfinance.detailsFood.IncomeCategoryActivityShow
+
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -28,33 +29,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PageExpencesActivity : AppCompatActivity() {
+class PageIncomeActivity : AppCompatActivity() {
     private lateinit var pieChart: PieChart
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_page_expences)
+        setContentView(R.layout.activity_page_income)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
         pieChart = findViewById(R.id.pieChart)
         setupPieChart()
 
         initListener()
-        val buttonMakeExpense: Button = findViewById(R.id.button_make_expense)
+        val buttonMakeIncome: Button = findViewById(R.id.button_make_income)
 
-        buttonMakeExpense.setOnClickListener {
-            val intent = Intent(this, MakeExpenceActivity::class.java)
+        buttonMakeIncome.setOnClickListener {
+            val intent = Intent(this, MakeIncomeActivity::class.java)
             startActivity(intent)
         }
 
-
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
-        bottomNavigationView.selectedItemId = R.id.bottom_home
+        bottomNavigationView.selectedItemId = R.id.bottom_income
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -63,21 +65,17 @@ class PageExpencesActivity : AppCompatActivity() {
                     finish()
                     true
                 }
-
-                R.id.bottom_income -> {
-                    startActivity(Intent(applicationContext, PageIncomeActivity::class.java))
+                R.id.bottom_home -> {
+                    startActivity(Intent(applicationContext, PageExpencesActivity::class.java))
                     finish()
                     true
                 }
-
-                R.id.bottom_home -> {
-                    true // Остаемся на текущем экране
+                R.id.bottom_income -> {
+                    true // Stay on current screen
                 }
-
                 else -> false
             }
         }
-
     }
 
     private fun setupPieChart() {
@@ -101,25 +99,23 @@ class PageExpencesActivity : AppCompatActivity() {
         pieChart.setEntryLabelTextSize(12f)
     }
 
-    private fun loadDataToPieChart(foodSum: Int, medicineSum: Int, relaxSum: Int) {
+    private fun loadDataToPieChart(giftSum: Int, workSum: Int, winSum: Int) {
         val entries = ArrayList<PieEntry>()
 
-        if (foodSum > 0) entries.add(PieEntry(foodSum.toFloat(), "Еда"))
-        if (medicineSum > 0) entries.add(PieEntry(medicineSum.toFloat(), "Мед"))
-        if (relaxSum > 0) entries.add(PieEntry(relaxSum.toFloat(), "Отдых"))
+        if (giftSum > 0) entries.add(PieEntry(giftSum.toFloat(), "Подарки"))
+        if (workSum > 0) entries.add(PieEntry(workSum.toFloat(), "Работа"))
+        if (winSum > 0) entries.add(PieEntry(winSum.toFloat(), "Лотерея"))
 
         if (entries.isEmpty()) {
-            // Show some default data if no expenses
             entries.add(PieEntry(1f, "Нет данных"))
         }
 
-        val dataSet = PieDataSet(entries, "Расходы по категориям")
+        val dataSet = PieDataSet(entries, "Доходы по категориям")
         dataSet.setDrawIcons(false)
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0f, 40f)
         dataSet.selectionShift = 5f
 
-        // Add colors
         val colors = ArrayList<Int>()
         colors.add(ContextCompat.getColor(this, R.color.purple_200)) // Food color
         colors.add(ContextCompat.getColor(this, R.color.yellow))     // Medicine color
@@ -138,25 +134,25 @@ class PageExpencesActivity : AppCompatActivity() {
     }
 
     private fun initListener() {
-        val buttonFoodContainer: ConstraintLayout = findViewById(R.id.constraintLayout_food)
-        val buttonMedicineContainer: ConstraintLayout = findViewById(R.id.constraintLayout_medicine)
-        val buttonRelaxContainer: ConstraintLayout = findViewById(R.id.constraintLayout_relax)
+        val buttonGiftContainer: ConstraintLayout = findViewById(R.id.constraintLayout_gift)
+        val buttonWorkContainer: ConstraintLayout = findViewById(R.id.constraintLayout_work)
+        val buttonWinContainer: ConstraintLayout = findViewById(R.id.constraintLayout_win)
 
-        buttonFoodContainer.setOnClickListener {
-            val intent = Intent(this, FoodCategoryActivityShow::class.java)
-            intent.putExtra("name_category", CATEGORY.FOOD)
+        buttonGiftContainer.setOnClickListener {
+            val intent = Intent(this, IncomeCategoryActivityShow::class.java)
+            intent.putExtra("name_category", CATEGORYS.GIFT)
             startActivity(intent)
         }
 
-        buttonMedicineContainer.setOnClickListener {
-            val intent = Intent(this, FoodCategoryActivityShow::class.java)
-            intent.putExtra("name_category", CATEGORY.MEDICINE)
+        buttonWorkContainer.setOnClickListener {
+            val intent = Intent(this, IncomeCategoryActivityShow::class.java)
+            intent.putExtra("name_category", CATEGORYS.WORK)
             startActivity(intent)
         }
 
-        buttonRelaxContainer.setOnClickListener {
-            val intent = Intent(this, FoodCategoryActivityShow::class.java)
-            intent.putExtra("name_category", CATEGORY.RELAX)
+        buttonWinContainer.setOnClickListener {
+            val intent = Intent(this, IncomeCategoryActivityShow::class.java)
+            intent.putExtra("name_category", CATEGORYS.WIN)
             startActivity(intent)
         }
     }
@@ -164,56 +160,50 @@ class PageExpencesActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val db = AppDatabase.getInstance(this)
-        val expenseDao = db.userDao()
+        val incomeDao = db.userDao()
         lifecycleScope.launch {
-            Log.e("Расходы", expenseDao.getAllExpenses().toString())
+            Log.e("Доходы", incomeDao.getAllIncome().toString())
         }
 
-        loadExpenses()
+        loadIncomes()
     }
 
-    private fun loadExpenses() {
+    private fun loadIncomes() {
         val db = AppDatabase.getInstance(this)
         val dao = db.userDao()
 
         lifecycleScope.launch {
-            val foodSum = dao.getFoodExpensesSum() ?: 0
-            val medicineSum = dao.getMedicineExpensesSum() ?: 0
-            val relaxSum = dao.getRelaxExpensesSum() ?: 0
+            val giftSum = dao.getGiftIncomeSum() ?: 0
+            val workSum = dao.getWorkIncomeSum() ?: 0
+            val winSum = dao.getWinIncomeSum() ?: 0
             val lastGoal = dao.getLastGoal()
 
-            val totalIncome = withContext(Dispatchers.IO) {
-                (dao.getGiftIncomeSum() ?: 0) +
-                        (dao.getWorkIncomeSum() ?: 0) +
-                        (dao.getWinIncomeSum() ?: 0)
+            // Calculate total income and current balance
+            val totalIncome = giftSum + workSum + winSum
+            val totalExpenses = withContext(Dispatchers.IO) {
+                (dao.getFoodExpensesSum() ?: 0) +
+                        (dao.getMedicineExpensesSum() ?: 0) +
+                        (dao.getRelaxExpensesSum() ?: 0)
             }
-
-            val totalExpenses = foodSum + medicineSum + relaxSum
             val currentBalance = (lastGoal?.initialCapital ?: 0) + totalIncome - totalExpenses
 
             withContext(Dispatchers.Main) {
+                // Show current balance, not total income
                 findViewById<TextView>(R.id.text_money_now).text = "$currentBalance ₽"
+
                 // Update UI with the sums
-                findViewById<TextView>(R.id.text_money_food).text = "$foodSum ₽"
-                findViewById<TextView>(R.id.text_money_medicine).text = "$medicineSum ₽"
-                findViewById<TextView>(R.id.text_money_relax).text = "$relaxSum ₽"
+                findViewById<TextView>(R.id.text_money_gift).text = "$giftSum ₽"
+                findViewById<TextView>(R.id.text_money_work).text = "$workSum ₽"
+                findViewById<TextView>(R.id.text_money_win).text = "$winSum ₽"
 
-                // Update current balance
-                findViewById<TextView>(R.id.text_money_now).text = "$currentBalance ₽"
-
-                // You can also calculate and display percentages if needed
-                val total = foodSum + medicineSum + relaxSum
+                val total = giftSum + workSum + winSum
                 if (total > 0) {
-                    findViewById<TextView>(R.id.text_percent_food).text =
-                        "${(foodSum * 100 / total)}%"
-                    findViewById<TextView>(R.id.text_percent_medicine).text =
-                        "${(medicineSum * 100 / total)}%"
-                    findViewById<TextView>(R.id.text_percent_relax).text =
-                        "${(relaxSum * 100 / total)}%"
+                    findViewById<TextView>(R.id.text_percent_gift).text = "${(giftSum * 100 / total)}%"
+                    findViewById<TextView>(R.id.text_percent_work).text = "${(workSum * 100 / total)}%"
+                    findViewById<TextView>(R.id.text_percent_win).text = "${(winSum * 100 / total)}%"
 
-                    loadDataToPieChart(foodSum, medicineSum, relaxSum)
+                    loadDataToPieChart(giftSum, workSum, winSum)
                 } else {
-                    // If no expenses, show empty chart
                     loadDataToPieChart(0, 0, 0)
                 }
             }

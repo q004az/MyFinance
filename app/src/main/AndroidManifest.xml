@@ -20,6 +20,9 @@
             android:name=".MakeIncomeActivity"
             android:exported="false" />
         <activity
+            android:name=".PageIncomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".IncomePageActivity"
             android:exported="false" />
         <activity
@@ -27,6 +30,9 @@
             android:exported="false" />
         <activity
             android:name=".detailsFood.FoodCategoryActivityShow"
+            android:exported="false" />
+        <activity
+            android:name=".detailsFood.IncomeCategoryActivityShow"
             android:exported="false" />
         <activity
             android:name=".MakeExpenceActivity"

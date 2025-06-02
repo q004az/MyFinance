@@ -31,6 +31,21 @@ data class Expense(
     val date: String
 )
 
+@Entity("incomes")
+data class Income(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val category: String,
+    val name: String,
+    val amount: Int,
+    val date: String
+)
+
 enum class CATEGORY : java.io.Serializable{
     FOOD, MEDICINE, RELAX
+}
+
+
+enum class CATEGORYS : java.io.Serializable{
+    GIFT, WORK, WIN
 }

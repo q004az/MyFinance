@@ -16,6 +16,7 @@
     <color name="colorFood">#4CAF50</color> <!-- Зеленый для еды -->
     <color name="colorMedicine">#2196F3</color> <!-- Синий для медицины -->
     <color name="colorRelax">#FF9800</color> <!-- Оранжевый для отдыха -->
+    <color name="green">#EF00FF1C</color>
 
 
 </resources>

@@ -53,9 +53,44 @@ interface AppDao  {
     @Query("SELECT SUM(amount) FROM expenses WHERE category = 'Отдых'")
     suspend fun getRelaxExpensesSum(): Int?
 
+    @Insert
+    suspend fun insert(income: Income)
+
+    @Query("SELECT * FROM incomes")
+    suspend fun getAllIncome(): List<Income>
+
+    @Query("SELECT * FROM incomes WHERE id = :id")
+    suspend fun getIncomeById(id: Long): Income?
+
+    @Query("DELETE FROM incomes WHERE id = :incomeId")
+    suspend fun deleteByIdIncome(incomeId: Int)
+
+    @Query("SELECT * FROM incomes WHERE category = 'Гифт'")
+    suspend fun getGiftIncome(): List<Income>
+
+    @Query("SELECT * FROM incomes WHERE category = 'Работа'")
+    suspend fun getWorkIncome(): List<Income>
+
+    @Query("SELECT * FROM incomes WHERE category = 'Лотерея'")
+    suspend fun getWinIncome(): List<Income>
+
+    @Query("SELECT SUM(amount) FROM incomes WHERE category = 'Гифт'")
+    suspend fun getGiftIncomeSum(): Int?
+
+    @Query("SELECT SUM(amount) FROM incomes WHERE category = 'Работа'")
+    suspend fun getWorkIncomeSum(): Int?
+
+    @Query("SELECT SUM(amount) FROM incomes WHERE category = 'Лотерея'")
+    suspend fun getWinIncomeSum(): Int?
+
+
+
+
+
+
 }
 
-@Database(entities = [User::class, Goal::class, Expense::class], version = 1)
+@Database(entities = [User::class, Goal::class, Expense::class, Income::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): AppDao
 

@@ -7,7 +7,7 @@
     android:background="#FFF"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MakeExpenceActivity">
+    tools:context=".MakeIncomeActivity">
 
 
     <TextView
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="@font/inter_bold"
-        android:text="Создание расхода"
+        android:text="Создание дохода"
         android:textColor="#30AA90"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -45,42 +45,42 @@
 
     <CheckBox
         android:id="@+id/checkBox"
-        android:layout_width="80dp"
-        android:layout_height="48dp"
-        android:text="Отдых"
+        android:layout_width="119dp"
+        android:layout_height="47dp"
+        android:text="Лотерея"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.737"
+        app:layout_constraintHorizontal_bias="0.859"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.298" />
 
     <CheckBox
         android:id="@+id/checkBox2"
-        android:layout_width="80dp"
+        android:layout_width="102dp"
         android:layout_height="48dp"
-        android:text="Мед"
+        android:text="Работа"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.298" />
 
     <CheckBox
         android:id="@+id/checkBox3"
         android:layout_width="87dp"
         android:layout_height="47dp"
-        android:text="Еда"
+        android:text="Гифт"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.24"
+        app:layout_constraintHorizontal_bias="0.191"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.299" />
 
     <EditText
-        android:id="@+id/expense_name"
+        android:id="@+id/income_name"
         android:layout_width="220dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -97,7 +97,7 @@
         app:layout_constraintVertical_bias="0.382" />
 
     <EditText
-        android:id="@+id/expanse_date"
+        android:id="@+id/income_date"
         android:layout_width="220dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -114,12 +114,12 @@
         app:layout_constraintVertical_bias="0.536" />
 
     <EditText
-        android:id="@+id/expense_amount"
+        android:id="@+id/income_amount"
         android:layout_width="220dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:ems="10"
-        android:hint="Сумма расходов"
+        android:hint="Сумма доходов"
         android:inputType="textEmailAddress"
         android:textColor="#000000"
         android:textColorHint="#8C8B8B"
@@ -131,7 +131,7 @@
         app:layout_constraintVertical_bias="0.458" />
 
     <Button
-        android:id="@+id/button_goal"
+        android:id="@+id/button_income"
         android:layout_width="220dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
