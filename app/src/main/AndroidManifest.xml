@@ -17,6 +17,15 @@
         android:theme="@style/Theme.MyFinance"
         tools:targetApi="31">
         <activity
+            android:name=".MakeIncomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".IncomePageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".IncomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".detailsFood.FoodCategoryActivityShow"
             android:exported="false" />
         <activity

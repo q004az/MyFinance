@@ -64,12 +64,12 @@ class MainScreenActivity : AppCompatActivity() {
         }
 
 
-        }
+    }
 
-        override fun onResume() {
-            super.onResume()
-            loadGoal()
-        }
+    override fun onResume() {
+        super.onResume()
+        loadGoal()
+    }
 
     private fun loadGoal() {
         val goalName: TextView = findViewById(R.id.goal_name)
@@ -106,4 +106,4 @@ class MainScreenActivity : AppCompatActivity() {
             }
         }
     }
-    }
+}

@@ -7,6 +7,8 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+
+
 @Dao
 interface AppDao  {
     @Insert
@@ -74,4 +76,6 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
+
+
 

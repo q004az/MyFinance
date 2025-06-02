@@ -12,8 +12,8 @@
     <androidx.appcompat.widget.Toolbar
 
         android:id="@+id/toolbar"
-        android:layout_width="413dp"
-        android:layout_height="152dp"
+        android:layout_width="411dp"
+        android:layout_height="112dp"
         android:background="@drawable/ic_launcher_background"
         android:backgroundTint="#5EC28A"
         android:clipToPadding="false"
