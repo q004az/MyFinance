@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    tools:context=".detailsFood.IncomeCategoryActivityShow">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="412dp"
+        android:layout_height="152dp"
+        android:background="@drawable/ic_launcher_background"
+        android:backgroundTint="#5EC28A"
+        android:clipToPadding="false"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout_income"
+        android:layout_width="288dp"
+        android:layout_height="48dp"
+        android:background="#D5D4D4FF"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/toolbar3"
+        app:layout_constraintTop_toTopOf="@+id/toolbar3"
+        app:layout_constraintVertical_bias="0.692">
+
+        <TextView
+            android:id="@+id/text_category_income"
+            android:layout_width="75dp"
+            android:layout_height="31dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Доход"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.069"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_percent_income"
+            android:layout_width="55dp"
+            android:layout_height="23dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Null"
+            android:textColor="#fff"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.557"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.52" />
+
+        <TextView
+            android:id="@+id/text_money_income"
+            android:layout_width="55dp"
+            android:layout_height="23dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="0 Р"
+            android:textColor="#fff"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.931"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.52" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/date_tv"
+        android:layout_margin="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Дата"
+        tools:layout_editor_absoluteX="34dp"
+        tools:layout_editor_absoluteY="189dp" />
+
+    <TextView
+        android:id="@+id/name_tv"
+        android:layout_marginStart="32dp"
+        app:layout_constraintStart_toEndOf="@id/date_tv"
+        app:layout_constraintTop_toTopOf="@id/date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Название"
+        tools:layout_editor_absoluteX="99dp"
+        tools:layout_editor_absoluteY="189dp" />
+
+    <TextView
+        android:id="@+id/amount_tv"
+        android:layout_marginStart="32dp"
+        app:layout_constraintStart_toEndOf="@id/name_tv"
+        app:layout_constraintTop_toTopOf="@id/name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сумма"
+        tools:layout_editor_absoluteX="204dp"
+        tools:layout_editor_absoluteY="189dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/exp_rv"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name_tv" />
+</androidx.constraintlayout.widget.ConstraintLayout>
