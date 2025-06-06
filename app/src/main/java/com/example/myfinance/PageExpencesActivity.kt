@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PageExpencesActivity : AppCompatActivity() {
+    private var userId: Int = -1
     private lateinit var pieChart: PieChart
 
     @SuppressLint("MissingInflatedId")
@@ -41,6 +43,13 @@ class PageExpencesActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        userId = intent.getIntExtra("user_id", -1)
+        if(userId == -1) {
+            Toast.makeText(this, "Ошибка авторизации", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
         pieChart = findViewById(R.id.pieChart)
         setupPieChart()
 
@@ -49,6 +58,7 @@ class PageExpencesActivity : AppCompatActivity() {
 
         buttonMakeExpense.setOnClickListener {
             val intent = Intent(this, MakeExpenceActivity::class.java)
+            intent.putExtra("user_id", userId)
             startActivity(intent)
         }
 
@@ -59,21 +69,26 @@ class PageExpencesActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_profile -> {
-                    startActivity(Intent(applicationContext, MainScreenActivity::class.java))
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.putExtra("user_id", userId)
+                    startActivity(intent)
                     finish()
                     true
                 }
-
-                R.id.bottom_income -> {
-                    startActivity(Intent(applicationContext, PageIncomeActivity::class.java))
-                    finish()
-                    true
-                }
-
                 R.id.bottom_home -> {
-                    true // Остаемся на текущем экране
+                    val intent = Intent(this, PageExpencesActivity::class.java)
+                    intent.putExtra("user_id", userId)
+                    startActivity(intent)
+                    finish()
+                    true
                 }
-
+                R.id.bottom_income -> {
+                    val intent = Intent(this, PageIncomeActivity::class.java)
+                    intent.putExtra("user_id", userId)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
                 else -> false
             }
         }
@@ -103,14 +118,19 @@ class PageExpencesActivity : AppCompatActivity() {
 
     private fun loadDataToPieChart(foodSum: Int, medicineSum: Int, relaxSum: Int) {
         val entries = ArrayList<PieEntry>()
+        val colors = ArrayList<Int>()
 
         if (foodSum > 0) entries.add(PieEntry(foodSum.toFloat(), "Еда"))
-        if (medicineSum > 0) entries.add(PieEntry(medicineSum.toFloat(), "Мед"))
-        if (relaxSum > 0) entries.add(PieEntry(relaxSum.toFloat(), "Отдых"))
+        if (medicineSum > 0) entries.add(PieEntry(medicineSum.toFloat(), "Медицина"))
+        if (relaxSum > 0) entries.add(PieEntry(relaxSum.toFloat(), "Развлечения"))
 
         if (entries.isEmpty()) {
-            // Show some default data if no expenses
             entries.add(PieEntry(1f, "Нет данных"))
+            colors.add(Color.GRAY) // Серый цвет для "нет данных"
+        } else {
+            colors.add(ContextCompat.getColor(this, R.color.salad))
+            colors.add(ContextCompat.getColor(this, R.color.yellow))
+            colors.add(ContextCompat.getColor(this, R.color.red))
         }
 
         val dataSet = PieDataSet(entries, "Расходы по категориям")
@@ -118,13 +138,6 @@ class PageExpencesActivity : AppCompatActivity() {
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0f, 40f)
         dataSet.selectionShift = 5f
-
-        // Add colors
-        val colors = ArrayList<Int>()
-        colors.add(ContextCompat.getColor(this, R.color.purple_200)) // Food color
-        colors.add(ContextCompat.getColor(this, R.color.yellow))     // Medicine color
-        colors.add(ContextCompat.getColor(this, R.color.red))        // Relax color
-
         dataSet.colors = colors
 
         val data = PieData(dataSet)
@@ -145,18 +158,21 @@ class PageExpencesActivity : AppCompatActivity() {
         buttonFoodContainer.setOnClickListener {
             val intent = Intent(this, FoodCategoryActivityShow::class.java)
             intent.putExtra("name_category", CATEGORY.FOOD)
+            intent.putExtra("user_id", userId)  // Добавьте эту строку
             startActivity(intent)
         }
 
         buttonMedicineContainer.setOnClickListener {
             val intent = Intent(this, FoodCategoryActivityShow::class.java)
             intent.putExtra("name_category", CATEGORY.MEDICINE)
+            intent.putExtra("user_id", userId)  // Добавьте эту строку
             startActivity(intent)
         }
 
         buttonRelaxContainer.setOnClickListener {
             val intent = Intent(this, FoodCategoryActivityShow::class.java)
             intent.putExtra("name_category", CATEGORY.RELAX)
+            intent.putExtra("user_id", userId)  // Добавьте эту строку
             startActivity(intent)
         }
     }
@@ -166,7 +182,7 @@ class PageExpencesActivity : AppCompatActivity() {
         val db = AppDatabase.getInstance(this)
         val expenseDao = db.userDao()
         lifecycleScope.launch {
-            Log.e("Расходы", expenseDao.getAllExpenses().toString())
+            Log.e("Расходы", expenseDao.getAllExpenses(userId).toString())
         }
 
         loadExpenses()
@@ -177,15 +193,15 @@ class PageExpencesActivity : AppCompatActivity() {
         val dao = db.userDao()
 
         lifecycleScope.launch {
-            val foodSum = dao.getFoodExpensesSum() ?: 0
-            val medicineSum = dao.getMedicineExpensesSum() ?: 0
-            val relaxSum = dao.getRelaxExpensesSum() ?: 0
-            val lastGoal = dao.getLastGoal()
+            val foodSum = dao.getFoodExpensesSum(userId) ?: 0
+            val medicineSum = dao.getMedicineExpensesSum(userId) ?: 0
+            val relaxSum = dao.getRelaxExpensesSum(userId) ?: 0
+            val lastGoal = dao.getLastGoal(userId)
 
             val totalIncome = withContext(Dispatchers.IO) {
-                (dao.getGiftIncomeSum() ?: 0) +
-                        (dao.getWorkIncomeSum() ?: 0) +
-                        (dao.getWinIncomeSum() ?: 0)
+                (dao.getGiftIncomeSum(userId) ?: 0) +
+                        (dao.getWorkIncomeSum(userId) ?: 0) +
+                        (dao.getWinIncomeSum(userId) ?: 0)
             }
 
             val totalExpenses = foodSum + medicineSum + relaxSum

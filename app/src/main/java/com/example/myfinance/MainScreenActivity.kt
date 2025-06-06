@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -26,7 +27,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainScreenActivity : AppCompatActivity() {
+    private var userId: Int = -1  // ID текущего пользователя
     private lateinit var pieChartBalance: PieChart
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,27 +41,32 @@ class MainScreenActivity : AppCompatActivity() {
             insets
         }
 
+        userId = intent.getIntExtra("user_id", -1)
+        if(userId == -1) {
+            Toast.makeText(this, "Ошибка авторизации", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         pieChartBalance = findViewById(R.id.pieChartBalance)
         setupBalancePieChart()
 
-
-        val login = intent.getStringExtra("user_login")
-        val name: TextView = findViewById(R.id.text_name)
-        name.text = login ?: "Гость"
-
-        val goalName: TextView = findViewById(R.id.goal_name)
-        val goalNow: TextView = findViewById(R.id.goal_now)
-        val goalNeed: TextView = findViewById(R.id.goal_need)
-        val goalBetween: TextView = findViewById(R.id.goal_between)
+        loadUserData()
 
         val buttonGoal: Button = findViewById(R.id.button_make_goal)
         buttonGoal.setOnClickListener {
             val intent = Intent(this, makeGoalActivity::class.java)
+            intent.putExtra("user_id", userId)
             startActivity(intent)
         }
 
-        // Загружаем цель
-        loadGoal()
+        val buttonEndGoal: Button = findViewById(R.id.button_end_goal)
+        buttonEndGoal.setOnClickListener {
+            endGoalAndClearData()
+        }
+
+        // Загружаем цель и данные о расходах/доходах
+        loadGoalAndFinanceData()
 
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.selectedItemId = R.id.bottom_profile
@@ -66,24 +74,55 @@ class MainScreenActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_profile -> {
-                    true // Остаемся на текущем экране
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.putExtra("user_id", userId)
+                    startActivity(intent)
+                    finish()
+                    true
                 }
                 R.id.bottom_home -> {
-                    startActivity(Intent(applicationContext, PageExpencesActivity::class.java))
+                    val intent = Intent(this, PageExpencesActivity::class.java)
+                    intent.putExtra("user_id", userId)
+                    startActivity(intent)
                     finish()
                     true
                 }
                 R.id.bottom_income -> {
-                    startActivity(Intent(applicationContext, PageIncomeActivity::class.java))
+                    val intent = Intent(this, PageIncomeActivity::class.java)
+                    intent.putExtra("user_id", userId)
+                    startActivity(intent)
                     finish()
                     true
                 }
-
                 else -> false
             }
         }
 
+        val buttonExit : Button = findViewById(R.id.button_exit_profile)
+        buttonExit.setOnClickListener {
+            val intent = Intent(this, AuthActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
+    private fun loadUserData() {
+        val db = AppDatabase.getInstance(this)
+        val dao = db.userDao()
+        val nameTextView: TextView = findViewById(R.id.text_name)
+
+        lifecycleScope.launch {
+            val user = withContext(Dispatchers.IO) {
+                dao.getUserById(userId)
+            }
+
+            withContext(Dispatchers.Main) {
+                user?.let {
+                    nameTextView.text = it.login
+                } ?: run {
+                    nameTextView.text = "Гость"
+                }
+            }
+        }
     }
 
     private fun setupBalancePieChart() {
@@ -109,79 +148,133 @@ class MainScreenActivity : AppCompatActivity() {
 
     private fun loadBalanceData(totalIncome: Int, totalExpenses: Int) {
         val entries = ArrayList<PieEntry>()
+        val colors = ArrayList<Int>()
 
-        if (totalIncome > 0) entries.add(PieEntry(totalIncome.toFloat(), "Доходы"))
-        if (totalExpenses > 0) entries.add(PieEntry(totalExpenses.toFloat(), "Расходы"))
-
-        if (entries.isEmpty()) {
-            entries.add(PieEntry(1f, "Нет данных"))
+        // Добавляем доходы первыми (они будут зелеными)
+        if (totalIncome > 0) {
+            entries.add(PieEntry(totalIncome.toFloat(), "Доходы"))
+            colors.add(ContextCompat.getColor(this, R.color.green))
         }
 
-        val dataSet = PieDataSet(entries, "Баланс")
-        dataSet.setDrawIcons(false)
-        dataSet.sliceSpace = 3f
-        dataSet.iconsOffset = MPPointF(0f, 40f)
-        dataSet.selectionShift = 5f
+        // Добавляем расходы вторыми (они будут красными)
+        if (totalExpenses > 0) {
+            entries.add(PieEntry(totalExpenses.toFloat(), "Расходы"))
+            colors.add(ContextCompat.getColor(this, R.color.red))
+        }
 
-        // Цвета для доходов и расходов
-        val colors = ArrayList<Int>()
-        colors.add(ContextCompat.getColor(this, R.color.green))  // Цвет для доходов
-        colors.add(ContextCompat.getColor(this, R.color.red))    // Цвет для расходов
+        // Если нет данных, показываем заглушку
+        if (entries.isEmpty()) {
+            entries.add(PieEntry(1f, "Нет данных"))
+            colors.add(ContextCompat.getColor(this, R.color.gray))
+        }
 
-        dataSet.colors = colors
+        val dataSet = PieDataSet(entries, "Баланс").apply {
+            setDrawIcons(false)
+            sliceSpace = 3f
+            iconsOffset = MPPointF(0f, 40f)
+            selectionShift = 5f
+            this.colors = colors
+        }
 
-        val data = PieData(dataSet)
-        data.setValueFormatter(PercentFormatter(pieChartBalance))
-        data.setValueTextSize(15f)
-        data.setValueTypeface(Typeface.DEFAULT_BOLD)
-        data.setValueTextColor(Color.WHITE)
-        pieChartBalance.data = data
-        pieChartBalance.highlightValues(null)
-        pieChartBalance.invalidate()
+        val data = PieData(dataSet).apply {
+            setValueFormatter(PercentFormatter(pieChartBalance))
+            setValueTextSize(15f)
+            setValueTypeface(Typeface.DEFAULT_BOLD)
+            setValueTextColor(Color.WHITE)
+        }
+
+        pieChartBalance.apply {
+            this.data = data
+            highlightValues(null)
+            invalidate()
+        }
     }
-
 
     override fun onResume() {
         super.onResume()
-        loadGoal()
+        loadGoalAndFinanceData()
     }
 
-    private fun loadGoal() {
+    private fun loadGoalAndFinanceData() {
         val db = AppDatabase.getInstance(this)
         val dao = db.userDao()
 
         lifecycleScope.launch {
-            val lastGoal = dao.getLastGoal()
+            val lastGoal = dao.getLastGoal(userId)
             val totalExpenses = withContext(Dispatchers.IO) {
-                (dao.getFoodExpensesSum() ?: 0) +
-                        (dao.getMedicineExpensesSum() ?: 0) +
-                        (dao.getRelaxExpensesSum() ?: 0)
+                (dao.getFoodExpensesSum(userId) ?: 0) +
+                        (dao.getMedicineExpensesSum(userId) ?: 0) +
+                        (dao.getRelaxExpensesSum(userId) ?: 0)
             }
             val totalIncome = withContext(Dispatchers.IO) {
-                (dao.getGiftIncomeSum() ?: 0) +
-                        (dao.getWorkIncomeSum() ?: 0) +
-                        (dao.getWinIncomeSum() ?: 0)
+                (dao.getGiftIncomeSum(userId) ?: 0) +
+                        (dao.getWorkIncomeSum(userId) ?: 0) +
+                        (dao.getWinIncomeSum(userId) ?: 0)
             }
 
             withContext(Dispatchers.Main) {
-                // Обновляем данные для круговой диаграммы
+                // Обновляем поля расходов и доходов
+                findViewById<TextView>(R.id.exp_now).text = totalExpenses.toString()
+                findViewById<TextView>(R.id.income_now).text = totalIncome.toString()
+
                 loadBalanceData(totalIncome, totalExpenses)
 
+                val goalAchieveTextView = findViewById<TextView>(R.id.goal_achive)
+                val goalBetweenTextView = findViewById<TextView>(R.id.goal_between)
+
                 if (lastGoal != null) {
-                    val currentBalance = lastGoal.initialCapital + totalIncome - totalExpenses
-                    val remaining = lastGoal.targetAmount - currentBalance
+                    val currentBalance = totalIncome - totalExpenses
+                    val remaining = maxOf(lastGoal.targetAmount - currentBalance, 0)
 
                     findViewById<TextView>(R.id.goal_name).text = lastGoal.title
                     findViewById<TextView>(R.id.goal_now).text = currentBalance.toString()
                     findViewById<TextView>(R.id.goal_need).text = lastGoal.targetAmount.toString()
-                    findViewById<TextView>(R.id.goal_between).text =
-                        if (remaining > 0) remaining.toString() else "Цель достигнута!"
+                    goalBetweenTextView.text = remaining.toString()
+
+                    if (currentBalance >= lastGoal.targetAmount) {
+                        goalAchieveTextView.text = "Да"
+                        goalAchieveTextView.setTextColor(Color.GREEN)
+                    } else {
+                        goalAchieveTextView.text = "Нет"
+                        goalAchieveTextView.setTextColor(Color.RED)
+                    }
                 } else {
                     findViewById<TextView>(R.id.goal_name).text = "Нет цели"
                     findViewById<TextView>(R.id.goal_now).text = "0"
                     findViewById<TextView>(R.id.goal_need).text = "0"
-                    findViewById<TextView>(R.id.goal_between).text = "0"
+                    goalBetweenTextView.text = "0"
+                    goalAchieveTextView.text = "Нет"
+                    goalAchieveTextView.setTextColor(Color.RED)
                 }
+            }
+        }
+    }
+
+    private fun endGoalAndClearData() {
+        val db = AppDatabase.getInstance(this)
+        val dao = db.userDao()
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val lastGoal = dao.getLastGoal(userId)
+                if (lastGoal != null) {
+                    dao.deleteAllGoals(userId)
+                    dao.deleteAllExpenses(userId)
+                    dao.deleteAllIncomes(userId)
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                findViewById<TextView>(R.id.goal_name).text = "Нет цели"
+                findViewById<TextView>(R.id.goal_now).text = "0"
+                findViewById<TextView>(R.id.goal_need).text = "0"
+                findViewById<TextView>(R.id.goal_between).text = "0"
+                findViewById<TextView>(R.id.exp_now).text = "0"
+                findViewById<TextView>(R.id.income_now).text = "0"
+
+                loadBalanceData(0, 0)
+
+                Toast.makeText(this@MainScreenActivity, "Цель завершена, данные очищены", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -17,6 +17,10 @@
     <color name="colorMedicine">#2196F3</color> <!-- Синий для медицины -->
     <color name="colorRelax">#FF9800</color> <!-- Оранжевый для отдыха -->
     <color name="green">#EF00FF1C</color>
+    <color name="pink">#EFC421FF</color>
+    <color name="salad">#CA359B</color>
+    <color name="gray">#5B5B5B</color>
+
 
 
 </resources>

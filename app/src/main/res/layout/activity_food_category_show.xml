@@ -25,7 +25,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_food"
-        android:layout_width="288dp"
+        android:layout_width="340dp"
         android:layout_height="48dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
@@ -37,47 +37,33 @@
 
         <TextView
             android:id="@+id/text_category_food"
-            android:layout_width="59dp"
-            android:layout_height="32dp"
+            android:layout_width="146dp"
+            android:layout_height="31dp"
             android:fontFamily="@font/inter_bold"
             android:text="Еда"
             android:textColor="#fff"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.148"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_percent_food"
-            android:layout_width="55dp"
-            android:layout_height="23dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="Null"
-            android:textColor="#fff"
-            android:textSize="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.557"
+            app:layout_constraintHorizontal_bias="0.065"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.52" />
+            app:layout_constraintVertical_bias="0.533" />
 
         <TextView
             android:id="@+id/text_money_food"
-            android:layout_width="55dp"
-            android:layout_height="23dp"
+            android:layout_width="126dp"
+            android:layout_height="27dp"
             android:fontFamily="@font/inter_bold"
             android:text="0 Р"
             android:textColor="#fff"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.931"
+            app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.52" />
+            app:layout_constraintVertical_bias="0.523" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

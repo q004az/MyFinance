@@ -44,10 +44,10 @@
         android:text="Создать"
         app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.532" />
+        app:layout_constraintVertical_bias="0.58" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
         android:textColor="#fff"
-        android:text="Остаток"
+        android:text="Баланс"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.101"
@@ -92,15 +92,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_food"
-        android:layout_width="288dp"
-        android:layout_height="48dp"
+        android:layout_width="336dp"
+        android:layout_height="49dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.613">
+        app:layout_constraintVertical_bias="0.667">
 
         <TextView
             android:id="@+id/text_category_food"
@@ -150,27 +150,27 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_medicine"
-        android:layout_width="288dp"
+        android:layout_width="340dp"
         android:layout_height="48dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.696">
+        app:layout_constraintVertical_bias="0.752">
 
         <TextView
             android:id="@+id/text_catrgory_medicine"
-            android:layout_width="59dp"
-            android:layout_height="32dp"
+            android:layout_width="122dp"
+            android:layout_height="34dp"
             android:fontFamily="@font/inter_bold"
-            android:text="Мед"
+            android:text="Медицина"
             android:textColor="#fff"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.148"
+            app:layout_constraintHorizontal_bias="0.073"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -208,22 +208,22 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_relax"
-        android:layout_width="288dp"
-        android:layout_height="48dp"
+        android:layout_width="335dp"
+        android:layout_height="47dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.486"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.779">
+        app:layout_constraintVertical_bias="0.847">
 
         <TextView
             android:id="@+id/text_catrgory_relax"
-            android:layout_width="80dp"
-            android:layout_height="31dp"
+            android:layout_width="146dp"
+            android:layout_height="30dp"
             android:fontFamily="@font/inter_bold"
-            android:text="отдых"
+            android:text="Развлечения"
             android:textColor="#fff"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -243,10 +243,10 @@
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.557"
+            app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.52" />
+            app:layout_constraintVertical_bias="0.541" />
 
         <TextView
             android:id="@+id/text_money_relax"

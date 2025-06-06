@@ -47,7 +47,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.532" />
+        app:layout_constraintVertical_bias="0.587" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
         android:textColor="#fff"
-        android:text="Остаток"
+        android:text="Баланс"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.101"
@@ -92,29 +92,29 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_gift"
-        android:layout_width="288dp"
-        android:layout_height="48dp"
+        android:layout_width="331dp"
+        android:layout_height="47dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.613">
+        app:layout_constraintVertical_bias="0.671">
 
         <TextView
             android:id="@+id/text_category_gift"
-            android:layout_width="59dp"
-            android:layout_height="32dp"
+            android:layout_width="126dp"
+            android:layout_height="34dp"
             android:fontFamily="@font/inter_bold"
-            android:text="Гифт"
+            android:text="Переводы"
             android:textColor="#fff"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.148"
+            app:layout_constraintHorizontal_bias="0.078"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.461" />
 
         <TextView
             android:id="@+id/text_percent_gift"
@@ -150,15 +150,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_work"
-        android:layout_width="288dp"
-        android:layout_height="48dp"
+        android:layout_width="331dp"
+        android:layout_height="46dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.696">
+        app:layout_constraintVertical_bias="0.75">
 
         <TextView
             android:id="@+id/text_category_work"
@@ -208,22 +207,21 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_win"
-        android:layout_width="288dp"
-        android:layout_height="48dp"
+        android:layout_width="327dp"
+        android:layout_height="47dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.779">
+        app:layout_constraintVertical_bias="0.845">
 
         <TextView
             android:id="@+id/text_catrgory_win"
             android:layout_width="98dp"
             android:layout_height="32dp"
             android:fontFamily="@font/inter_bold"
-            android:text="Лотерея"
+            android:text="Бизнес"
             android:textColor="#fff"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"

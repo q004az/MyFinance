@@ -1,6 +1,7 @@
 package com.example.myfinance
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -12,8 +13,11 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.regex.Pattern
 
 class makeGoalActivity : AppCompatActivity() {
+    private var userId: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,48 +28,102 @@ class makeGoalActivity : AppCompatActivity() {
             insets
         }
 
-        val userGoalTitle: EditText = findViewById(R.id.goal_name)
-        val userStartAmount: EditText = findViewById(R.id.goal_start_amount)
-        val userEndAmount: EditText = findViewById(R.id.goal_end_amount)
+        userId = intent.getIntExtra("user_id", -1)
+        if(userId == -1) {
+            Toast.makeText(this, "Ошибка авторизации", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
+        val userGoalTitle: EditText = findViewById(R.id.goal_name)
+        val userEndAmount: EditText = findViewById(R.id.goal_end_amount)
         val buttonGoal: Button = findViewById(R.id.button_goal)
+
+        // Устанавливаем фильтр для суммы (только цифры)
+        userEndAmount.filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
+            if (source.isNotEmpty() && !source.toString().matches(Regex("^\\d+\$"))) {
+                ""
+            } else {
+                null
+            }
+        })
 
         buttonGoal.setOnClickListener {
             val title = userGoalTitle.text.toString().trim()
-            val startAmountStr = userStartAmount.text.toString().trim()
             val endAmountStr = userEndAmount.text.toString().trim()
 
-            if (title.isEmpty() || startAmountStr.isEmpty() || endAmountStr.isEmpty()) {
-                Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
+            // Валидация названия цели
+            if (title.isEmpty()) {
+                userGoalTitle.error = "Введите название цели"
+                userGoalTitle.requestFocus()
                 return@setOnClickListener
             }
 
-            // Попробуем преобразовать в Int
-            val startAmount = startAmountStr.toIntOrNull()
+            if (!isValidTitle(title)) {
+                userGoalTitle.error = "Название содержит недопустимые символы"
+                userGoalTitle.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (title.length > 20) {
+                userGoalTitle.error = "Название слишком длинное (макс. 20 символов)"
+                userGoalTitle.requestFocus()
+                return@setOnClickListener
+            }
+
+            // Валидация суммы
+            if (endAmountStr.isEmpty()) {
+                userEndAmount.error = "Введите сумму цели"
+                userEndAmount.requestFocus()
+                return@setOnClickListener
+            }
+
             val endAmount = endAmountStr.toIntOrNull()
-
-            if (startAmount == null || endAmount == null) {
-                Toast.makeText(this, "Введите корректные числовые значения", Toast.LENGTH_LONG).show()
+            if (endAmount == null || endAmount <= 0) {
+                userEndAmount.error = "Введите корректную сумму (больше 0)"
+                userEndAmount.requestFocus()
                 return@setOnClickListener
             }
 
-            val goal = Goal(0, title, startAmount, endAmount)
+            if (endAmount > 1_000_000) {
+                userEndAmount.error = "Сумма слишком большая"
+                userEndAmount.requestFocus()
+                return@setOnClickListener
+            }
+
+            // Устанавливаем начальный капитал всегда 0
+            val goal = Goal(0, userId, title, 0, endAmount)
 
             val db = AppDatabase.getInstance(this)
             val goalDao = db.userDao()
             lifecycleScope.launch {
-                goalDao.insert(goal)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@makeGoalActivity, "Цель добавлена", Toast.LENGTH_LONG).show()
-                    setResult(RESULT_OK)
-                    finish()
+                try {
+                    goalDao.insert(goal)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@makeGoalActivity,
+                            "Цель добавлена",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        setResult(RESULT_OK)
+                        finish()
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@makeGoalActivity,
+                            "Ошибка при сохранении цели: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
-
-            userGoalTitle.text.clear()
-            userStartAmount.text.clear()
-            userEndAmount.text.clear()
         }
+    }
 
+    // Проверка названия на допустимые символы
+    private fun isValidTitle(title: String): Boolean {
+        val pattern = Pattern.compile("^[a-zA-Zа-яА-Я0-9 \\-.,!?()\"']+\$")
+        return pattern.matcher(title).matches()
     }
 }

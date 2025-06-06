@@ -11,15 +11,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FoodCategoryActivityShow : AppCompatActivity() {
-    private lateinit var binding: ActivityFoodCategoryShowBinding
 
+    private lateinit var binding: ActivityFoodCategoryShowBinding
+    private var userId: Int = -1
     private var category: CATEGORY? = null
     private val adapter = ExpensesAdapter(this::deleteRecord)
 
     private fun deleteRecord(id: Int) {
         val db = AppDatabase.getInstance(this)
         lifecycleScope.launch {
-            db.userDao().deleteById(id)
+            db.userDao().deleteById(id, userId)
             gettingLists(category ?: CATEGORY.FOOD, db)
         }
     }
@@ -28,6 +29,12 @@ class FoodCategoryActivityShow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityFoodCategoryShowBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        userId = intent.getIntExtra("user_id", -1)
+        if (userId == -1) {
+            finish()
+            return
+        }
 
         binding.expRv.adapter = adapter
         val db = AppDatabase.getInstance(this)
@@ -42,8 +49,8 @@ class FoodCategoryActivityShow : AppCompatActivity() {
     private suspend fun gettingLists(category: CATEGORY, db: AppDatabase) {
         when (category) {
             CATEGORY.FOOD -> {
-                val list = db.userDao().getFoodExpenses()
-                val sum = db.userDao().getFoodExpensesSum() ?: 0
+                val list = db.userDao().getFoodExpenses(userId)
+                val sum = db.userDao().getFoodExpensesSum(userId) ?: 0
                 withContext(Dispatchers.Main) {
                     binding.textCategoryFood.text = "Еда"
                     binding.textMoneyFood.text = "$sum Р"
@@ -51,8 +58,8 @@ class FoodCategoryActivityShow : AppCompatActivity() {
                 }
             }
             CATEGORY.MEDICINE -> {
-                val list = db.userDao().getMedicineExpenses()
-                val sum = db.userDao().getMedicineExpensesSum() ?: 0
+                val list = db.userDao().getMedicineExpenses(userId)
+                val sum = db.userDao().getMedicineExpensesSum(userId) ?: 0
                 withContext(Dispatchers.Main) {
                     binding.textCategoryFood.text = "Медицина"
                     binding.textMoneyFood.text = "$sum Р"
@@ -60,16 +67,15 @@ class FoodCategoryActivityShow : AppCompatActivity() {
                 }
             }
             CATEGORY.RELAX -> {
-                val list = db.userDao().getRelaxExpenses()
-                val sum = db.userDao().getRelaxExpensesSum() ?: 0
+                val list = db.userDao().getRelaxExpenses(userId)
+                val sum = db.userDao().getRelaxExpensesSum(userId) ?: 0
                 withContext(Dispatchers.Main) {
-                    binding.textCategoryFood.text = "Отдых"
+                    binding.textCategoryFood.text = "Развлечения"
                     binding.textMoneyFood.text = "$sum Р"
                     adapter.submitList(list)
                 }
             }
             null -> {
-                // Обработка случая, когда категория не передана
                 withContext(Dispatchers.Main) {
                     binding.textCategoryFood.text = "Категория"
                     binding.textMoneyFood.text = "0 Р"

@@ -16,6 +16,7 @@ data class User(
 data class Goal(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
+    val userId: Int,  // Добавляем связь с пользователем
     val title: String,
     val initialCapital: Int,
     val targetAmount: Int
@@ -25,6 +26,7 @@ data class Goal(
 data class Expense(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val userId: Int,  // Добавляем связь с пользователем
     val category: String,
     val name: String,
     val amount: Int,
@@ -35,6 +37,7 @@ data class Expense(
 data class Income(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val userId: Int,  // Добавляем связь с пользователем
     val category: String,
     val name: String,
     val amount: Int,

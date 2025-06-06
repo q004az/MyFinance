@@ -12,13 +12,15 @@ import kotlinx.coroutines.withContext
 
 class IncomeCategoryActivityShow : AppCompatActivity() {
     private lateinit var binding: ActivityIncomeCategoryShowBinding
+    private var userId: Int = -1
     private var category: CATEGORYS? = null
+
     private val adapter = IncomeAdapter(this::deleteRecord)
 
     private fun deleteRecord(id: Int) {
         val db = AppDatabase.getInstance(this)
         lifecycleScope.launch {
-            db.userDao().deleteByIdIncome(id)
+            db.userDao().deleteByIdIncome(id,userId)
             gettingLists(category ?: CATEGORYS.GIFT, db)
         }
     }
@@ -27,6 +29,12 @@ class IncomeCategoryActivityShow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityIncomeCategoryShowBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        userId = intent.getIntExtra("user_id", -1)
+        if (userId == -1) {
+            finish()
+            return
+        }
 
         binding.expRv.adapter = adapter
         val db = AppDatabase.getInstance(this)
@@ -41,17 +49,17 @@ class IncomeCategoryActivityShow : AppCompatActivity() {
     private suspend fun gettingLists(category: CATEGORYS, db: AppDatabase) {
         when (category) {
             CATEGORYS.GIFT -> {
-                val list = db.userDao().getGiftIncome()
-                val sum = db.userDao().getGiftIncomeSum() ?: 0
+                val list = db.userDao().getGiftIncome(userId)
+                val sum = db.userDao().getGiftIncomeSum(userId) ?: 0
                 withContext(Dispatchers.Main) {
-                    binding.textCategoryIncome.text = "Подарки"
+                    binding.textCategoryIncome.text = "Переводы"
                     binding.textMoneyIncome.text = "$sum Р"
                     adapter.submitList(list)
                 }
             }
             CATEGORYS.WORK -> {
-                val list = db.userDao().getWorkIncome()
-                val sum = db.userDao().getWorkIncomeSum() ?: 0
+                val list = db.userDao().getWorkIncome(userId)
+                val sum = db.userDao().getWorkIncomeSum(userId) ?: 0
                 withContext(Dispatchers.Main) {
                     binding.textCategoryIncome.text = "Работа"
                     binding.textMoneyIncome.text = "$sum Р"
@@ -59,10 +67,10 @@ class IncomeCategoryActivityShow : AppCompatActivity() {
                 }
             }
             CATEGORYS.WIN -> {
-                val list = db.userDao().getWinIncome()
-                val sum = db.userDao().getWinIncomeSum() ?: 0
+                val list = db.userDao().getWinIncome(userId)
+                val sum = db.userDao().getWinIncomeSum(userId) ?: 0
                 withContext(Dispatchers.Main) {
-                    binding.textCategoryIncome.text = "Лотерея"
+                    binding.textCategoryIncome.text = "Бизнес"
                     binding.textMoneyIncome.text = "$sum Р"
                     adapter.submitList(list)
                 }

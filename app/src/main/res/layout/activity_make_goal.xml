@@ -33,18 +33,6 @@
         android:hint="Придумайте название"/>
 
     <EditText
-        android:id="@+id/goal_start_amount"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:textColorHint="#8C8B8B"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:textColor="#000000"
-        android:hint="Начальный капитал"/>
-
-    <EditText
         android:id="@+id/goal_end_amount"
         android:layout_width="220dp"
         android:layout_height="50dp"

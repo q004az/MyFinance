@@ -25,8 +25,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_income"
-        android:layout_width="288dp"
-        android:layout_height="48dp"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
         android:background="#D5D4D4FF"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
 
         <TextView
             android:id="@+id/text_category_income"
-            android:layout_width="75dp"
+            android:layout_width="164dp"
             android:layout_height="31dp"
             android:fontFamily="@font/inter_bold"
             android:text="Доход"
@@ -50,34 +50,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_percent_income"
-            android:layout_width="55dp"
-            android:layout_height="23dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="Null"
-            android:textColor="#fff"
-            android:textSize="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.557"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.52" />
-
-        <TextView
             android:id="@+id/text_money_income"
-            android:layout_width="55dp"
-            android:layout_height="23dp"
+            android:layout_width="118dp"
+            android:layout_height="30dp"
             android:fontFamily="@font/inter_bold"
             android:text="0 Р"
             android:textColor="#fff"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.931"
+            app:layout_constraintHorizontal_bias="0.919"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.52" />
+            app:layout_constraintVertical_bias="0.523" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

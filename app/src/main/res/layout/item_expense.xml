@@ -55,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/delete_btn"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/bucket"
             android:layout_width="26dp"
             android:layout_height="26dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

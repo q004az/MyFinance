@@ -43,28 +43,25 @@ class AuthActivity : AppCompatActivity() {
 
             if (login == "" || pass == "")
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
-            else{
-
+            else {
                 val db = AppDatabase.getInstance(this)
                 val userDao = db.userDao()
                 lifecycleScope.launch {
-                    val isAuth = userDao.isUserExists(login,pass)
-
-                    if(isAuth){
+                    val user = userDao.getUserByLogin(login)
+                    if(user != null && user.password == pass) {
                         withContext(Dispatchers.Main){
                             Toast.makeText(this@AuthActivity, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
                             val intent = Intent(this@AuthActivity, MainScreenActivity::class.java)
+                            intent.putExtra("user_id", user.id)  // Передаем ID пользователя
                             intent.putExtra("user_login", login)
                             startActivity(intent)
                             userLogin.text.clear()
                             userPass.text.clear()
                         }
-
-                    }else
+                    } else {
                         Toast.makeText(this@AuthActivity, "Пользователь $login НЕ авторизован", Toast.LENGTH_LONG).show()
+                    }
                 }
-
-
             }
         }
     }
