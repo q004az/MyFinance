@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/bottom_home"
-        android:title="Расходы"/>
+        android:title="РАСХОДЫ"/>
 
     <item
         android:id="@+id/bottom_income"
-        android:title="Доходы"/>
+        android:title="ДОХОДЫ"/>
 
     <item
         android:id="@+id/bottom_profile"
-        android:title="Профиль"/>
-
+        android:title="КАБИНЕТ"/>
 </menu>
+

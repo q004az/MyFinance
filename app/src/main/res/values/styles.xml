@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Стиль для BottomNavigationView с компактными элементами -->
+    <style name="BottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <!-- Основные параметры -->
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">#5EC28A</item>
+
+        <!-- Компактные настройки -->
+        <item name="itemHorizontalTranslationEnabled">false</item>
+        <item name="itemIconSize">22dp</item> <!-- Уменьшенный размер иконок -->
+
+        <!-- Минимальные отступы -->
+        <item name="itemPaddingTop">4dp</item>
+        <item name="itemPaddingBottom">4dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+
+        <!-- Стили текста -->
+        <item name="itemTextAppearanceActive">@style/BottomNavigationTextActive</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationTextInactive</item>
+        <item name="itemTextColor">@drawable/bottom_nav_colors</item>
+        <item name="itemIconTint">@drawable/bottom_nav_colors</item>
+
+        <!-- Уменьшаем расстояние между иконкой и текстом -->
+        <item name="itemIconPadding">2dp</item>
+    </style>
+
+    <!-- Стиль для активного текста -->
+    <style name="BottomNavigationTextActive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item> <!-- Убираем лишние отступы в тексте -->
+    </style>
+
+    <!-- Стиль для неактивного текста -->
+    <style name="BottomNavigationTextInactive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">#808080</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+</resources>

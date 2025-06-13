@@ -65,6 +65,13 @@ class MainScreenActivity : AppCompatActivity() {
             endGoalAndClearData()
         }
 
+        // Кнопка перехода в раздел вкладов
+        findViewById<Button>(R.id.button_vklad).setOnClickListener {
+            val intent = Intent(this, DepositActivity::class.java)
+            intent.putExtra("user_id", userId)
+            startActivity(intent)
+        }
+
         // Загружаем цель и данные о расходах/доходах
         loadGoalAndFinanceData()
 
@@ -190,6 +197,7 @@ class MainScreenActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onResume() {
         super.onResume()
         loadGoalAndFinanceData()
@@ -204,31 +212,43 @@ class MainScreenActivity : AppCompatActivity() {
             val totalExpenses = withContext(Dispatchers.IO) {
                 (dao.getFoodExpensesSum(userId) ?: 0) +
                         (dao.getMedicineExpensesSum(userId) ?: 0) +
-                        (dao.getRelaxExpensesSum(userId) ?: 0)
+                        (dao.getRelaxExpensesSum(userId) ?: 0) +
+                        (dao.getJKHExpensesSum(userId) ?: 0) +
+                        (dao.getTRANSPORTExpensesSum(userId) ?: 0) +
+                        (dao.getARENDAExpensesSum(userId) ?: 0) +
+                        (dao.getMOBILEExpensesSum(userId) ?: 0) +
+                        (dao.getCREDITExpensesSum(userId) ?: 0) +
+                        (dao.getCLOTHESExpensesSum(userId) ?: 0)
             }
+
             val totalIncome = withContext(Dispatchers.IO) {
                 (dao.getGiftIncomeSum(userId) ?: 0) +
                         (dao.getWorkIncomeSum(userId) ?: 0) +
-                        (dao.getWinIncomeSum(userId) ?: 0)
+                        (dao.getWinIncomeSum(userId) ?: 0) + (dao.getDepositIncomeSum(userId) ?: 0)
             }
 
+            val currentBalance = totalIncome - totalExpenses
+
             withContext(Dispatchers.Main) {
-                // Обновляем поля расходов и доходов
+                // Обновляем основные поля всегда
                 findViewById<TextView>(R.id.exp_now).text = totalExpenses.toString()
                 findViewById<TextView>(R.id.income_now).text = totalIncome.toString()
 
+                // Обновляем текущий баланс в разделе "Ваша цель"
+                findViewById<TextView>(R.id.goal_now).text = currentBalance.toString()
+
+                // Обновляем круговую диаграмму
                 loadBalanceData(totalIncome, totalExpenses)
 
+                // Обработка цели (если есть)
                 val goalAchieveTextView = findViewById<TextView>(R.id.goal_achive)
                 val goalBetweenTextView = findViewById<TextView>(R.id.goal_between)
 
                 if (lastGoal != null) {
-                    val currentBalance = totalIncome - totalExpenses
-                    val remaining = maxOf(lastGoal.targetAmount - currentBalance, 0)
-
                     findViewById<TextView>(R.id.goal_name).text = lastGoal.title
-                    findViewById<TextView>(R.id.goal_now).text = currentBalance.toString()
                     findViewById<TextView>(R.id.goal_need).text = lastGoal.targetAmount.toString()
+
+                    val remaining = maxOf(lastGoal.targetAmount - currentBalance, 0)
                     goalBetweenTextView.text = remaining.toString()
 
                     if (currentBalance >= lastGoal.targetAmount) {
@@ -240,7 +260,6 @@ class MainScreenActivity : AppCompatActivity() {
                     }
                 } else {
                     findViewById<TextView>(R.id.goal_name).text = "Нет цели"
-                    findViewById<TextView>(R.id.goal_now).text = "0"
                     findViewById<TextView>(R.id.goal_need).text = "0"
                     goalBetweenTextView.text = "0"
                     goalAchieveTextView.text = "Нет"
@@ -278,4 +297,6 @@ class MainScreenActivity : AppCompatActivity() {
             }
         }
     }
+
+
 }

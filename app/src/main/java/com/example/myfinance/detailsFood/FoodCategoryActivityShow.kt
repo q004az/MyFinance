@@ -75,6 +75,65 @@ class FoodCategoryActivityShow : AppCompatActivity() {
                     adapter.submitList(list)
                 }
             }
+            CATEGORY.JKH -> {
+                val list = db.userDao().getJKHExpenses(userId)
+                val sum = db.userDao().getJKHExpensesSum(userId) ?: 0
+                withContext(Dispatchers.Main) {
+                    binding.textCategoryFood.text = "ЖКХ"
+                    binding.textMoneyFood.text = "$sum Р"
+                    adapter.submitList(list)
+                }
+            }
+
+            CATEGORY.TRANSPORT -> {
+                val list = db.userDao().getTRANSPORTExpenses(userId)
+                val sum = db.userDao().getTRANSPORTExpensesSum(userId) ?: 0
+                withContext(Dispatchers.Main) {
+                    binding.textCategoryFood.text = "Транспорт"
+                    binding.textMoneyFood.text = "$sum Р"
+                    adapter.submitList(list)
+                }
+            }
+
+            CATEGORY.ARENDA -> {
+                val list = db.userDao().getARENDAExpenses(userId)
+                val sum = db.userDao().getARENDAExpensesSum(userId) ?: 0
+                withContext(Dispatchers.Main) {
+                    binding.textCategoryFood.text = "Аренда"
+                    binding.textMoneyFood.text = "$sum Р"
+                    adapter.submitList(list)
+                }
+            }
+            CATEGORY.MOBILE -> {
+                val list = db.userDao().getMOBILEExpenses(userId)
+                val sum = db.userDao().getMOBILEExpensesSum(userId) ?: 0
+                withContext(Dispatchers.Main) {
+                    binding.textCategoryFood.text = "Мобильная связь"
+                    binding.textMoneyFood.text = "$sum Р"
+                    adapter.submitList(list)
+                }
+            }
+
+            CATEGORY.CREDIT -> {
+                val list = db.userDao().getCREDITExpenses(userId)
+                val sum = db.userDao().getCREDITExpensesSum(userId) ?: 0
+                withContext(Dispatchers.Main) {
+                    binding.textCategoryFood.text = "Кредит"
+                    binding.textMoneyFood.text = "$sum Р"
+                    adapter.submitList(list)
+                }
+            }
+
+            CATEGORY.CLOTHES -> {
+                val list = db.userDao().getCLOTHESExpenses(userId)
+                val sum = db.userDao().getCLOTHESExpensesSum(userId) ?: 0
+                withContext(Dispatchers.Main) {
+                    binding.textCategoryFood.text = "Одежда"
+                    binding.textMoneyFood.text = "$sum Р"
+                    adapter.submitList(list)
+                }
+            }
+
             null -> {
                 withContext(Dispatchers.Main) {
                     binding.textCategoryFood.text = "Категория"

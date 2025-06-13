@@ -43,17 +43,6 @@ class MakeIncomeActivity : AppCompatActivity() {
             return
         }
 
-        val db = AppDatabase.getInstance(this)
-        val dao = db.userDao()
-        lifecycleScope.launch {
-            val goal = dao.getLastGoal(userId)
-            if(goal == null){
-                withContext(Dispatchers.Main){
-                    Toast.makeText(this@MakeIncomeActivity, "Сначала создайте цель", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-            }
-        }
 
         val incomeTitle: EditText = findViewById(R.id.income_name)
         val incomeAmount: EditText = findViewById(R.id.income_amount)

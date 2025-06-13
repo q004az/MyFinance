@@ -44,11 +44,21 @@ data class Income(
     val date: String
 )
 
+@Entity("deposits")
+data class Deposit(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val userId: Int,
+    val name: String,
+    val amount: Int
+)
+
+
 enum class CATEGORY : java.io.Serializable{
-    FOOD, MEDICINE, RELAX
+    FOOD, MEDICINE, RELAX, JKH,TRANSPORT,ARENDA,MOBILE,CREDIT,CLOTHES
 }
 
 
 enum class CATEGORYS : java.io.Serializable{
-    GIFT, WORK, WIN
+    GIFT, WORK, WIN, DEPOSIT
 }

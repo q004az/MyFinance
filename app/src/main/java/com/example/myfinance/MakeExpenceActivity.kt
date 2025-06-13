@@ -44,20 +44,6 @@ class MakeExpenceActivity : AppCompatActivity() {
         }
 
 
-        val db = AppDatabase.getInstance(this)
-        val dao = db.userDao()
-        lifecycleScope.launch {
-            val goal = dao.getLastGoal(userId)
-            if(goal == null){
-                withContext(Dispatchers.Main){
-                    Toast.makeText(this@MakeExpenceActivity, "Сначала создайте цель", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-                }
-        }
-
-
-
         val expanseTitle: EditText = findViewById(R.id.expense_name)
         val expenseAmount: EditText = findViewById(R.id.expense_amount)
         val expenseDate: EditText = findViewById(R.id.expanse_date)
@@ -79,8 +65,16 @@ class MakeExpenceActivity : AppCompatActivity() {
         val checkBoxMedicine: CheckBox = findViewById(R.id.checkBox2)
         val checkBoxRelax: CheckBox = findViewById(R.id.checkBox)
 
+        val checkBoxJKH: CheckBox = findViewById(R.id.checkBox13)
+        val checkBoxTRANSPORT: CheckBox = findViewById(R.id.checkBox14)
+        val checkBoxARENDA: CheckBox = findViewById(R.id.checkBox18)
+
+        val checkBoxMOBILE: CheckBox = findViewById(R.id.checkBox16)
+        val checkBoxCREDIT: CheckBox = findViewById(R.id.checkBox15)
+        val checkBoxCLOTHES: CheckBox = findViewById(R.id.checkBox17)
+
         // Настройка поведения CheckBox (только один выбран)
-        val checkBoxes = listOf(checkBoxFood, checkBoxMedicine, checkBoxRelax)
+        val checkBoxes = listOf(checkBoxFood, checkBoxMedicine, checkBoxRelax,checkBoxJKH,checkBoxTRANSPORT,checkBoxARENDA,checkBoxMOBILE,checkBoxCREDIT,checkBoxCLOTHES)
         checkBoxes.forEach { checkBox ->
             checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
@@ -164,6 +158,15 @@ class MakeExpenceActivity : AppCompatActivity() {
                 checkBoxFood.isChecked -> "Еда"
                 checkBoxMedicine.isChecked -> "Мед"
                 checkBoxRelax.isChecked -> "Отдых"
+
+                checkBoxJKH.isChecked -> "ЖКХ"
+                checkBoxTRANSPORT.isChecked -> "Транспорт"
+                checkBoxARENDA.isChecked -> "Аренда"
+
+                checkBoxMOBILE.isChecked -> "Мобильная"
+                checkBoxCREDIT.isChecked -> "Кредит"
+                checkBoxCLOTHES.isChecked -> "Одежда"
+
                 else -> {
                     Toast.makeText(this, "Выберите категорию расхода", Toast.LENGTH_LONG).show()
                     return@setOnClickListener

@@ -75,6 +75,18 @@ class IncomeCategoryActivityShow : AppCompatActivity() {
                     adapter.submitList(list)
                 }
             }
+
+            CATEGORYS.DEPOSIT -> {
+                val list = db.userDao().getDepositIncome(userId)
+                val sum = db.userDao().getDepositIncomeSum(userId) ?: 0
+                withContext(Dispatchers.Main) {
+                    binding.textCategoryIncome.text = "Вклад"
+                    binding.textMoneyIncome.text = "$sum Р"
+                    adapter.submitList(list)
+                }
+            }
+
+
             null -> {
                 withContext(Dispatchers.Main) {
                     binding.textCategoryIncome.text = "Доходы"

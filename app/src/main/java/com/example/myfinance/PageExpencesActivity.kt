@@ -1,5 +1,7 @@
 package com.example.myfinance
-
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.data.Entry
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
@@ -62,7 +64,6 @@ class PageExpencesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.selectedItemId = R.id.bottom_home
 
@@ -92,7 +93,6 @@ class PageExpencesActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
     }
 
     private fun setupPieChart() {
@@ -114,23 +114,71 @@ class PageExpencesActivity : AppCompatActivity() {
         pieChart.legend.isEnabled = false
         pieChart.setEntryLabelColor(Color.WHITE)
         pieChart.setEntryLabelTextSize(12f)
+
+        pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                if (e != null && e is PieEntry) {
+                    when (e.label) {
+                        "Еда" -> openCategoryActivity(CATEGORY.FOOD)
+                        "Медицина" -> openCategoryActivity(CATEGORY.MEDICINE)
+                        "Развлечения" -> openCategoryActivity(CATEGORY.RELAX)
+                        "ЖКХ" -> openCategoryActivity(CATEGORY.JKH)
+                        "Транспорт" -> openCategoryActivity(CATEGORY.TRANSPORT)
+                        "Аренда" -> openCategoryActivity(CATEGORY.ARENDA)
+                        "Мобильная" -> openCategoryActivity(CATEGORY.MOBILE)
+                        "Кредит" -> openCategoryActivity(CATEGORY.CREDIT)
+                        "Одежда" -> openCategoryActivity(CATEGORY.CLOTHES)
+                    }
+                }
+            }
+
+            override fun onNothingSelected() {
+                // Ничего не выбрано
+            }
+        })
     }
 
-    private fun loadDataToPieChart(foodSum: Int, medicineSum: Int, relaxSum: Int) {
+    private fun openCategoryActivity(category: CATEGORY) {
+        val intent = Intent(this, FoodCategoryActivityShow::class.java)
+        intent.putExtra("name_category", category)
+        intent.putExtra("user_id", userId)
+        startActivity(intent)
+    }
+
+    private fun loadDataToPieChart(foodSum: Int, medicineSum: Int, relaxSum: Int,
+                                   jkhSum: Int, transportSum: Int, arendaSum: Int,
+                                   mobileSum: Int, creditSum: Int, clothesSum: Int) {
         val entries = ArrayList<PieEntry>()
         val colors = ArrayList<Int>()
 
-        if (foodSum > 0) entries.add(PieEntry(foodSum.toFloat(), "Еда"))
-        if (medicineSum > 0) entries.add(PieEntry(medicineSum.toFloat(), "Медицина"))
-        if (relaxSum > 0) entries.add(PieEntry(relaxSum.toFloat(), "Развлечения"))
+        // Создаем карту категорий и их значений
+        val categories = mapOf(
+            "Еда" to foodSum,
+            "Медицина" to medicineSum,
+            "Развлечения" to relaxSum,
+            "ЖКХ" to jkhSum,
+            "Транспорт" to transportSum,
+            "Аренда" to arendaSum,
+            "Мобильная" to mobileSum,
+            "Кредит" to creditSum,
+            "Одежда" to clothesSum
+        )
+
+        // Добавляем только категории с положительными значениями
+        categories.forEach { (label, value) ->
+            if (value > 0) {
+                entries.add(PieEntry(value.toFloat(), label))
+            }
+        }
 
         if (entries.isEmpty()) {
             entries.add(PieEntry(1f, "Нет данных"))
-            colors.add(Color.GRAY) // Серый цвет для "нет данных"
+            colors.add(Color.GRAY)
         } else {
-            colors.add(ContextCompat.getColor(this, R.color.salad))
-            colors.add(ContextCompat.getColor(this, R.color.yellow))
-            colors.add(ContextCompat.getColor(this, R.color.red))
+            // Назначаем цвета в фиксированном порядке для каждой категории
+            entries.forEach { entry ->
+                colors.add(getColorForCategory(entry.label))
+            }
         }
 
         val dataSet = PieDataSet(entries, "Расходы по категориям")
@@ -150,30 +198,67 @@ class PageExpencesActivity : AppCompatActivity() {
         pieChart.invalidate()
     }
 
+    // Функция для получения фиксированного цвета для каждой категории
+    private fun getColorForCategory(category: String): Int {
+        return when (category) {
+            "Еда" -> ContextCompat.getColor(this, R.color.salad)
+            "Медицина" -> ContextCompat.getColor(this, R.color.yellow)
+            "Развлечения" -> ContextCompat.getColor(this, R.color.red)
+            "ЖКХ" -> ContextCompat.getColor(this, R.color.blue)
+            "Транспорт" -> ContextCompat.getColor(this, R.color.purple)
+            "Аренда" -> ContextCompat.getColor(this, R.color.orange)
+            "Мобильная" -> ContextCompat.getColor(this, R.color.teal)
+            "Кредит" -> ContextCompat.getColor(this, R.color.pink)
+            "Одежда" -> ContextCompat.getColor(this, R.color.brown)
+            else -> Color.GRAY
+        }
+    }
+
     private fun initListener() {
         val buttonFoodContainer: ConstraintLayout = findViewById(R.id.constraintLayout_food)
         val buttonMedicineContainer: ConstraintLayout = findViewById(R.id.constraintLayout_medicine)
         val buttonRelaxContainer: ConstraintLayout = findViewById(R.id.constraintLayout_relax)
+        val buttonJKHContainer: ConstraintLayout = findViewById(R.id.constraintLayout_JKH)
+        val buttonTRANSPORTContainer: ConstraintLayout = findViewById(R.id.constraintLayout_Transport)
+        val buttonARENDAContainer: ConstraintLayout = findViewById(R.id.constraintLayout_Arenda)
+        val buttonMOBILEContainer: ConstraintLayout = findViewById(R.id.constraintLayout_mobile)
+        val buttonCREDITContainer: ConstraintLayout = findViewById(R.id.constraintLayout_credit)
+        val buttonCLOTHESContainer: ConstraintLayout = findViewById(R.id.constraintLayout_clothes)
 
         buttonFoodContainer.setOnClickListener {
-            val intent = Intent(this, FoodCategoryActivityShow::class.java)
-            intent.putExtra("name_category", CATEGORY.FOOD)
-            intent.putExtra("user_id", userId)  // Добавьте эту строку
-            startActivity(intent)
+            openCategoryActivity(CATEGORY.FOOD)
         }
 
         buttonMedicineContainer.setOnClickListener {
-            val intent = Intent(this, FoodCategoryActivityShow::class.java)
-            intent.putExtra("name_category", CATEGORY.MEDICINE)
-            intent.putExtra("user_id", userId)  // Добавьте эту строку
-            startActivity(intent)
+            openCategoryActivity(CATEGORY.MEDICINE)
         }
 
         buttonRelaxContainer.setOnClickListener {
-            val intent = Intent(this, FoodCategoryActivityShow::class.java)
-            intent.putExtra("name_category", CATEGORY.RELAX)
-            intent.putExtra("user_id", userId)  // Добавьте эту строку
-            startActivity(intent)
+            openCategoryActivity(CATEGORY.RELAX)
+        }
+
+        buttonJKHContainer.setOnClickListener {
+            openCategoryActivity(CATEGORY.JKH)
+        }
+
+        buttonTRANSPORTContainer.setOnClickListener {
+            openCategoryActivity(CATEGORY.TRANSPORT)
+        }
+
+        buttonARENDAContainer.setOnClickListener {
+            openCategoryActivity(CATEGORY.ARENDA)
+        }
+
+        buttonMOBILEContainer.setOnClickListener {
+            openCategoryActivity(CATEGORY.MOBILE)
+        }
+
+        buttonCREDITContainer.setOnClickListener {
+            openCategoryActivity(CATEGORY.CREDIT)
+        }
+
+        buttonCLOTHESContainer.setOnClickListener {
+            openCategoryActivity(CATEGORY.CLOTHES)
         }
     }
 
@@ -184,7 +269,6 @@ class PageExpencesActivity : AppCompatActivity() {
         lifecycleScope.launch {
             Log.e("Расходы", expenseDao.getAllExpenses(userId).toString())
         }
-
         loadExpenses()
     }
 
@@ -196,41 +280,80 @@ class PageExpencesActivity : AppCompatActivity() {
             val foodSum = dao.getFoodExpensesSum(userId) ?: 0
             val medicineSum = dao.getMedicineExpensesSum(userId) ?: 0
             val relaxSum = dao.getRelaxExpensesSum(userId) ?: 0
-            val lastGoal = dao.getLastGoal(userId)
+            val JKHSum = dao.getJKHExpensesSum(userId) ?: 0
+            val TRANSPORTSum = dao.getTRANSPORTExpensesSum(userId) ?: 0
+            val ARENDASum = dao.getARENDAExpensesSum(userId) ?: 0
+            val MOBILESum = dao.getMOBILEExpensesSum(userId) ?: 0
+            val CREDITSum = dao.getCREDITExpensesSum(userId) ?: 0
+            val CLOTHESSum = dao.getCLOTHESExpensesSum(userId) ?: 0
 
+            val lastGoal = dao.getLastGoal(userId)
             val totalIncome = withContext(Dispatchers.IO) {
                 (dao.getGiftIncomeSum(userId) ?: 0) +
                         (dao.getWorkIncomeSum(userId) ?: 0) +
-                        (dao.getWinIncomeSum(userId) ?: 0)
+                        (dao.getWinIncomeSum(userId) ?: 0) + (dao.getDepositIncomeSum(userId) ?:0)
             }
 
-            val totalExpenses = foodSum + medicineSum + relaxSum
-            val currentBalance = (lastGoal?.initialCapital ?: 0) + totalIncome - totalExpenses
+            val totalExpenses = foodSum + medicineSum + relaxSum + JKHSum +
+                    TRANSPORTSum + ARENDASum + MOBILESum +
+                    CREDITSum + CLOTHESSum
+            val currentBalance = totalIncome - totalExpenses
 
             withContext(Dispatchers.Main) {
                 findViewById<TextView>(R.id.text_money_now).text = "$currentBalance ₽"
-                // Update UI with the sums
+
+                // Update money values
                 findViewById<TextView>(R.id.text_money_food).text = "$foodSum ₽"
                 findViewById<TextView>(R.id.text_money_medicine).text = "$medicineSum ₽"
                 findViewById<TextView>(R.id.text_money_relax).text = "$relaxSum ₽"
+                findViewById<TextView>(R.id.text_money_JKH).text = "$JKHSum ₽"
+                findViewById<TextView>(R.id.text_money_Transport).text = "$TRANSPORTSum ₽"
+                findViewById<TextView>(R.id.text_money_Arenda).text = "$ARENDASum ₽"
+                findViewById<TextView>(R.id.text_money_mobile).text = "$MOBILESum ₽"
+                findViewById<TextView>(R.id.text_money_credit).text = "$CREDITSum ₽"
+                findViewById<TextView>(R.id.text_money_clothes).text = "$CLOTHESSum ₽"
 
                 // Update current balance
                 findViewById<TextView>(R.id.text_money_now).text = "$currentBalance ₽"
 
-                // You can also calculate and display percentages if needed
-                val total = foodSum + medicineSum + relaxSum
-                if (total > 0) {
+                // Calculate and display percentages
+                if (totalExpenses > 0) {
                     findViewById<TextView>(R.id.text_percent_food).text =
-                        "${(foodSum * 100 / total)}%"
+                        "${(foodSum * 100 / totalExpenses)}%"
                     findViewById<TextView>(R.id.text_percent_medicine).text =
-                        "${(medicineSum * 100 / total)}%"
+                        "${(medicineSum * 100 / totalExpenses)}%"
                     findViewById<TextView>(R.id.text_percent_relax).text =
-                        "${(relaxSum * 100 / total)}%"
+                        "${(relaxSum * 100 / totalExpenses)}%"
+                    findViewById<TextView>(R.id.text_percent_JKH).text =
+                        "${(JKHSum * 100 / totalExpenses)}%"
+                    findViewById<TextView>(R.id.text_percent_Transport).text =
+                        "${(TRANSPORTSum * 100 / totalExpenses)}%"
+                    findViewById<TextView>(R.id.text_percent_Arenda).text =
+                        "${(ARENDASum * 100 / totalExpenses)}%"
+                    findViewById<TextView>(R.id.text_percent_mobile).text =
+                        "${(MOBILESum * 100 / totalExpenses)}%"
+                    findViewById<TextView>(R.id.text_percent_credit).text =
+                        "${(CREDITSum * 100 / totalExpenses)}%"
+                    findViewById<TextView>(R.id.text_percent_clothes).text =
+                        "${(CLOTHESSum * 100 / totalExpenses)}%"
 
-                    loadDataToPieChart(foodSum, medicineSum, relaxSum)
+                    loadDataToPieChart(foodSum, medicineSum, relaxSum, JKHSum,
+                        TRANSPORTSum, ARENDASum, MOBILESum,
+                        CREDITSum, CLOTHESSum)
                 } else {
                     // If no expenses, show empty chart
-                    loadDataToPieChart(0, 0, 0)
+                    loadDataToPieChart(0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+                    // Reset percentages
+                    findViewById<TextView>(R.id.text_percent_food).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_medicine).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_relax).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_JKH).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_Transport).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_Arenda).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_mobile).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_credit).text = "0%"
+                    findViewById<TextView>(R.id.text_percent_clothes).text = "0%"
                 }
             }
         }
